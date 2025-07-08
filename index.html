@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Building a Tracker Application</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ---------- style.css ---------- */
+    :root {
+      --bg-light: #f9f9fb;
+      --bg-dark: #22232b;
+      --text-light: #22232b;
+      --text-dark: #f9f9fb;
+      --primary: #4f8cff;
+      --border: #e0e0e0;
+      --modal-bg: rgba(0,0,0,0.2);
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--bg-light);
+      color: var(--text-light);
+      min-height: 100vh;
+      margin: 0;
+      transition: background 0.2s, color 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    @media (prefers-color-scheme: dark) {
+      body {
+        background: var(--bg-dark);
+        color: var(--text-dark);
+      }
+      .container {
+        background: #292a33;
+      }
+      .modal-content {
+        background: #33343c;
+        color: var(--text-dark);
+      }
+      input, select, button, textarea {
+        background: #23242b;
+        color: var(--text-dark);
+        border-color: #444;
+      }
+      table, th, td {
+        border-color: #444;
+      }
+    }
+    .container {
+      margin: 2.5em 0 0 0;
+      padding: 2em 2em 2.5em 2em;
+      background: #fff;
+      border-radius: 1.2em;
+      box-shadow: 0 2px 16px 0 rgba(0,0,0,0.06);
+      max-width: 700px;
+      width: 95vw;
+      min-width: 320px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: background 0.2s;
+    }
+    h1 {
+      font-size: 2.2em;
+      margin-bottom: 0.2em;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+    .iframe-placeholder {
+      width: 100%;
+      max-width: 480px;
+      height: 220px;
+      margin: 1.2em 0 2em 0;
+      background: #f1f3f7;
+      border: 2px dashed #bfc7d1;
+      color: #bfc7d1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3em;
+      border-radius: 0.8em;
+      transition: background 0.2s;
+    }
+    @media (prefers-color-scheme: dark) {
+      .iframe-placeholder {
+        background: #2c2d36;
+        color: #7b8497;
+        border-color: #474a57;
+      }
+    }
+    .table-section {
+      width: 100%;
+      margin: 0 0 1.5em 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .table-controls {
+      margin-bottom: 0.7em;
+      display: flex;
+      gap: 0.5em;
+    }
+    button {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 0.4em;
+      padding: 0.5em 1.1em;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background 0.15s;
+      outline: none;
+    }
+    button:hover, button:focus {
+      background: #3574e6;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 520px;
+      background: transparent;
+      margin-bottom: 0.2em;
+    }
+    th, td {
+      border: 1px solid var(--border);
+      padding: 0.5em 0.8em;
+      text-align: left;
+      min-width: 80px;
+      background: transparent;
+      transition: background 0.2s;
+    }
+    th {
+      background: #f5f7fa;
+      font-weight: 500;
+    }
+    @media (prefers-color-scheme: dark) {
+      th {
+        background: #23242b;
+      }
+    }
+    td input {
+      width: 100%;
+      border: none;
+      background: transparent;
+      font-size: 1em;
+      color: inherit;
+      outline: none;
+    }
+    .report-btn {
+      margin-top: 1.2em;
+      background: #e53e3e;
+      font-weight: 500;
+    }
+    .report-btn:hover {
+      background: #b83232;
+    }
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0;
+      width: 100vw; height: 100vh;
+      background: var(--modal-bg);
+      align-items: center;
+      justify-content: center;
+    }
+    .modal.active {
+      display: flex;
+    }
+    .modal-content {
+      background: #fff;
+      padding: 2em 1.5em 1.4em 1.5em;
+      border-radius: 0.7em;
+      box-shadow: 0 4px 24px 0 rgba(0,0,0,0.08);
+      min-width: 260px;
+      max-width: 95vw;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      transition: background 0.2s;
+    }
+    .modal-content h2 {
+      margin: 0 0 1em 0;
+      font-size: 1.2em;
+      font-weight: 600;
+    }
+    .modal-content label {
+      margin-bottom: 0.7em;
+      font-size: 1em;
+      font-weight: 500;
+    }
+    .modal-content select {
+      margin-bottom: 1em;
+      padding: 0.4em;
+      border-radius: 0.3em;
+      border: 1px solid #ccc;
+      font-size: 1em;
+    }
+    .modal-actions {
+      display: flex;
+      gap: 0.7em;
+      justify-content: flex-end;
+      margin-top: 1em;
+    }
+    .modal-actions button {
+      min-width: 80px;
+    }
+    .modal-success {
+      color: #38a169;
+      font-weight: 500;
+      margin-top: 1em;
+      text-align: center;
+    }
+    @media (max-width: 600px) {
+      .container {
+        padding: 1em 0.2em 2em 0.2em;
+      }
+      .iframe-placeholder {
+        max-width: 98vw;
+      }
+      table {
+        max-width: 98vw;
+        font-size: 0.97em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Building a Tracker Application</h1>
+    <!-- App Interface Placeholder -->
+    <div class="iframe-placeholder" id="app-iframe">
+      App Interface
+    </div>
+    <!-- Interactive Table Section -->
+    <div class="table-section">
+      <div class="table-controls">
+        <button id="add-row-btn">Add Row</button>
+        <button id="add-col-btn">Add Column</button>
+        <button id="download-btn">Download Table</button>
+      </div>
+      <table id="tracker-table">
+        <thead>
+          <tr id="table-head">
+            <th>Column 1</th>
+            <th>Column 2</th>
+          </tr>
+        </thead>
+        <tbody id="table-body">
+          <tr>
+            <td><input type="text" /></td>
+            <td><input type="text" /></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- Report Issue Button -->
+    <button class="report-btn" id="report-issue-btn">Report Issue</button>
+  </div>
+  <!-- Modal Dialog for Reporting Issues -->
+  <div class="modal" id="report-modal">
+    <div class="modal-content">
+      <h2>Report an Issue</h2>
+      <form id="report-form">
+        <label for="reason">Reason:</label>
+        <select id="reason" required>
+          <option value="" disabled selected>Select a reason</option>
+          <option value="violation">Violation of Terms</option>
+          <option value="inappropriate">Inappropriate Content</option>
+          <option value="technical">Technical Issue</option>
+          <option value="other">Other</option>
+        </select>
+        <label for="details">Details (optional):</label>
+        <textarea id="details" rows="2" placeholder="Additional details..."></textarea>
+        <div class="modal-actions">
+          <button type="submit">Submit</button>
+          <button type="button" id="cancel-modal-btn">Cancel</button>
+        </div>
+        <div class="modal-success" id="modal-success" style="display:none;">
+          Report submitted successfully!
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- ---------- app.js ---------- -->
+  <script>
+    // Table logic
+    const table = document.getElementById('tracker-table');
+    const thead = document.getElementById('table-head');
+    const tbody = document.getElementById('table-body');
+    const addRowBtn = document.getElementById('add-row-btn');
+    const addColBtn = document.getElementById('add-col-btn');
+    const downloadBtn = document.getElementById('download-btn');
+
+    // Add Row
+    addRowBtn.addEventListener('click', () => {
+      const row = document.createElement('tr');
+      const colCount = thead.children.length;
+      for (let i = 0; i < colCount; i++) {
+        const td = document.createElement('td');
+        const input = document.createElement('input');
+        input.type = 'text';
+        td.appendChild(input);
+        row.appendChild(td);
+      }
+      tbody.appendChild(row);
+    });
+
+    // Add Column
+    addColBtn.addEventListener('click', () => {
+      // Add header
+      const colNum = thead.children.length + 1;
+      const th = document.createElement('th');
+      th.textContent = `Column ${colNum}`;
+      thead.appendChild(th);
+      // Add cell to each row
+      Array.from(tbody.children).forEach(tr => {
+        const td = document.createElement('td');
+        const input = document.createElement('input');
+        input.type = 'text';
+        td.appendChild(input);
+        tr.appendChild(td);
+      });
+    });
+
+    // Download Table as CSV
+    downloadBtn.addEventListener('click', () => {
+      let csv = '';
+      // Headers
+      csv += Array.from(thead.children).map(th => `"${th.textContent}"`).join(',') + '\n';
+      // Rows
+      Array.from(tbody.children).forEach(tr => {
+        const row = Array.from(tr.children).map(td => `"${td.querySelector('input').value.replace(/"/g, '""')}"`);
+        csv += row.join(',') + '\n';
+      });
+      // Download
+      const blob = new Blob([csv], {type: 'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'tracker-table.csv';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    // Report Issue Modal Logic
+    const reportBtn = document.getElementById('report-issue-btn');
+    const modal = document.getElementById('report-modal');
+    const cancelModalBtn = document.getElementById('cancel-modal-btn');
+    const form = document.getElementById('report-form');
+    const modalSuccess = document.getElementById('modal-success');
+
+    reportBtn.addEventListener('click', () => {
+      modal.classList.add('active');
+      form.reset();
+      modalSuccess.style.display = 'none';
+    });
+    cancelModalBtn.addEventListener('click', () => {
+      modal.classList.remove('active');
+    });
+    // Close modal on outside click
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.classList.remove('active');
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      // Simulate POST request to /api/report
+      fetch('/api/report', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          reason: document.getElementById('reason').value,
+          details: document.getElementById('details').value
+        })
+      }).then(() => {
+        modalSuccess.style.display = 'block';
+        setTimeout(() => {
+          modal.classList.remove('active');
+        }, 1200);
+      });
+    });
+
+    // Prevent right-click on images and videos
+    document.addEventListener('contextmenu', function(e) {
+      if (e.target.tagName === 'IMG' || e.target.tagName === 'VIDEO') {
+        e.preventDefault();
+      }
+    });
+
+    // Theme switching (auto via CSS, but force update on theme change)
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+      document.body.classList.toggle('dark', window.matchMedia('(prefers-color-scheme: dark)').matches);
+    });
+
+    // Optional: If you want to embed a real app or map, replace the placeholder below.
+    // Example:
+    // document.getElementById('app-iframe').innerHTML = '<iframe src="your-app.html" ...></iframe>';
+  </script>
+</body>
+</html>
