@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Custom Interactive Tracker</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="chart-management">
+      <button id="newChartBtn" aria-label="Create New Chart">New Chart</button>
+      <select id="chartSelector" aria-label="Select Chart"></select>
+      <button id="saveChartBtn" aria-label="Save Current Chart">Save Chart</button>
+      <button id="deleteChartBtn" aria-label="Delete Current Chart">Delete Chart</button>
+    </div>
+  </header>
+
+  <main class="tracker-container">
+    <section class="control-panel" aria-label="Formatting and Management Controls">
+      <div class="selection-mode">
+        <label>
+          <input type="radio" name="selectionMode" value="single" checked />
+          Single
+        </label>
+        <label>
+          <input type="radio" name="selectionMode" value="multi" />
+          Multi
+        </label>
+      </div>
+
+      <div class="format-buttons" role="group" aria-label="Formatting Buttons">
+        <button class="format-btn" data-action="markTick" title="Green Tick">✅</button>
+        <button class="format-btn" data-action="markCross" title="Red Cross">❌</button>
+        <button class="format-btn" data-action="markQuestion" title="Black Question Mark">❓</button>
+        <button class="format-btn" data-action="bgLightGreen" title="Light Green Background">🟩</button>
+        <button class="format-btn" data-action="bgYellow" title="Yellow Background">🟨</button>
+        <button class="format-btn" data-action="bgOrange" title="Orange Background">🟧</button>
+        <button class="format-btn" data-action="bgDarkRed" title="Dark Red Background">🟥</button>
+        <button class="format-btn" data-action="bgDiagonalLines" title="Diagonal Lines Overlay">◼️</button>
+        <button class="format-btn" data-action="clearBG" title="Clear Background">Clear BG</button>
+        <button class="format-btn" data-action="clearMarks" title="Clear Marks">Clear Marks</button>
+      </div>
+
+      <div class="selection-controls">
+        <button id="selectColumnBtn" title="Select Column">Select Column</button>
+        <button id="clearSelectionBtn" title="Clear Selection">Clear Selection</button>
+      </div>
+
+      <div class="undo-redo-controls">
+        <button id="undoBtn" title="Undo">Undo</button>
+        <button id="redoBtn" title="Redo">Redo</button>
+      </div>
+
+      <div class="snapshot-controls">
+        <button id="snapshotBtn" title="Take Snapshot">Snapshot</button>
+      </div>
+    </section>
+
+    <section class="tracker-wrapper">
+      <table id="trackerTable" aria-label="Interactive Tracker Table" tabindex="0">
+        <thead>
+          <tr>
+            <th class="sticky-col names-col" contenteditable="true" aria-label="Names Header">Names</th>
+            <th class="sticky-col penalty-col" aria-label="Penalty Cards Header">Penalty</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <div id="snapshotModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="snapshotTitle" hidden>
+    <div class="modal-content">
+      <h2 id="snapshotTitle">Snapshot Preview</h2>
+      <canvas id="snapshotCanvas" aria-label="Snapshot Preview"></canvas>
+      <div class="modal-actions">
+        <button id="downloadSnapshotBtn">Download</button>
+        <button id="closeSnapshotBtn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,443 @@
+/* styles.css */
+
+/* Reset & base */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  background-color: #f9f9f9;
+  color: #222;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.4;
+}
+
+button {
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.4em 0.8em;
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 4px;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  user-select: none;
+}
+
+button:hover,
+button:focus {
+  background-color: #e6f0ff;
+  border-color: #3399ff;
+  outline: none;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+input[type="radio"] {
+  margin-right: 0.3em;
+}
+
+header.header {
+  background-color: #2a6ebb;
+  color: white;
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.chart-management {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.chart-management button,
+.chart-management select {
+  font-size: 1rem;
+  border-radius: 4px;
+  border: none;
+  padding: 0.5em 1em;
+}
+
+.chart-management select {
+  min-width: 180px;
+  cursor: pointer;
+}
+
+main.tracker-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 100vw;
+  overflow-x: auto;
+  padding: 1rem;
+  gap: 1rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+.control-panel {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  user-select: none;
+}
+
+.selection-mode label {
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+}
+
+.format-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.format-btn {
+  font-size: 1.25rem;
+  width: 2.8rem;
+  height: 2.8rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background: white;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.format-btn:hover,
+.format-btn:focus {
+  background-color: #cce4ff;
+  border-color: #3399ff;
+  outline: none;
+}
+
+.selection-controls button,
+.undo-redo-controls button,
+.snapshot-controls button {
+  font-size: 1rem;
+  padding: 0.4em 0.8em;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background: white;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.selection-controls button:hover,
+.undo-redo-controls button:hover,
+.snapshot-controls button:hover,
+.selection-controls button:focus,
+.undo-redo-controls button:focus,
+.snapshot-controls button:focus {
+  background-color: #cce4ff;
+  border-color: #3399ff;
+  outline: none;
+}
+
+.tracker-wrapper {
+  overflow: auto;
+  max-width: 100vw;
+  max-height: 70vh;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: white;
+  margin: 0 auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Table Styles */
+#trackerTable {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 700px;
+  table-layout: fixed;
+  user-select: none;
+}
+
+#trackerTable thead tr {
+  background-color: #f0f4f8;
+  border-bottom: 2px solid #3399ff;
+}
+
+#trackerTable th,
+#trackerTable td {
+  border: 1px solid #ccc;
+  padding: 0.4rem 0.6rem;
+  text-align: center;
+  vertical-align: middle;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  position: relative;
+  font-size: 0.9rem;
+  min-width: 60px;
+}
+
+#trackerTable th[contenteditable="true"],
+#trackerTable td[contenteditable="true"] {
+  cursor: text;
+  background-color: #fffbe6;
+  user-select: text;
+}
+
+#trackerTable th[contenteditable="true"]:focus,
+#trackerTable td[contenteditable="true"]:focus {
+  outline: 2px solid #3399ff;
+  background-color: #e6f0ff;
+}
+
+/* Sticky columns */
+.sticky-col {
+  position: sticky;
+  left: 0;
+  background-color: #f9f9f9;
+  z-index: 3;
+  box-shadow: 2px 0 5px -2px rgba(0, 0, 0, 0.1);
+  min-width: 120px;
+  max-width: 180px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.names-col {
+  left: 0;
+  font-weight: 700;
+  background-color: #f0f4f8;
+  z-index: 5;
+}
+
+.penalty-col {
+  left: 180px; /* width of names-col */
+  font-weight: 600;
+  background-color: #f7f7f7;
+  z-index: 4;
+  min-width: 90px;
+  max-width: 110px;
+}
+
+/* Selected cells */
+.selected-cell {
+  outline: 3px solid #3399ff;
+  outline-offset: -3px;
+  background-color: #d0e7ff !important;
+}
+
+/* Formatting Mark Icons */
+.cell-mark {
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  font-size: 1.2rem;
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+}
+
+/* Background colors */
+.bg-lightgreen {
+  background-color: #d4edda !important;
+}
+
+.bg-yellow {
+  background-color: #fff3cd !important;
+}
+
+.bg-orange {
+  background-color: #ffe5b4 !important;
+}
+
+.bg-darkred {
+  background-color: #8b0000 !important;
+  color: white !important;
+}
+
+/* Diagonal lines overlay */
+.bg-diagonal-lines {
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      rgba(0, 0, 0, 0.15) 0,
+      rgba(0, 0, 0, 0.15) 2px,
+      transparent 2px,
+      transparent 6px
+    );
+}
+
+/* Penalty card slots */
+.penalty-cell {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 0.3rem 0.4rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.card-slot {
+  width: 18px;
+  height: 26px;
+  border: 1.5px solid #999;
+  border-radius: 3px;
+  background-color: transparent;
+  box-sizing: border-box;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.card-yellow {
+  background-color: #fff3cd;
+  border-color: #f0ad4e;
+}
+
+.card-orange {
+  background-color: #ffe5b4;
+  border-color: #f39c12;
+}
+
+.card-red {
+  background-color: #8b0000;
+  border-color: #5c0000;
+}
+
+/* Responsive & Mobile */
+
+@media (max-width: 900px) {
+  .control-panel {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .format-buttons {
+    justify-content: center;
+  }
+
+  #trackerTable {
+    min-width: 600px;
+  }
+
+  .sticky-col.names-col {
+    min-width: 100px;
+    max-width: 140px;
+  }
+
+  .sticky-col.penalty-col {
+    left: 140px;
+    min-width: 80px;
+    max-width: 100px;
+  }
+}
+
+@media (max-width: 480px) {
+  header.header,
+  .chart-management {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  button,
+  select {
+    font-size: 0.9rem;
+    padding: 0.4em 0.7em;
+  }
+
+  .format-btn {
+    width: 2.4rem;
+    height: 2.4rem;
+    font-size: 1.1rem;
+  }
+
+  #trackerTable {
+    font-size: 0.8rem;
+    min-width: 500px;
+  }
+}
+
+/* Modal Styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1500;
+  padding: 1rem;
+}
+
+.modal[hidden] {
+  display: none;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 8px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+#snapshotCanvas {
+  max-width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: white;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  width: 100%;
+}
+
+.modal-actions button {
+  flex: 1;
+  padding: 0.6em 1.2em;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: none;
+  background-color: #2a6ebb;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.modal-actions button:hover,
+.modal-actions button:focus {
+  background-color: #1e4f8b;
+  outline: none;
+}
